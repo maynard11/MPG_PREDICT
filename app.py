@@ -2,11 +2,19 @@ from flask import Flask, request, render_template_string
 import joblib
 import pandas as pd
 from category_encoders import HashingEncoder
+import os
 
-# Load model, scaler, and columns
-model = joblib.load("mpg_model.pkl")
-scaler = joblib.load("scaler.pkl")
-columns = joblib.load("columns.pkl")
+try:
+    model = joblib.load("mpg_model.pkl")
+    scaler = joblib.load("scaler.pkl")
+    columns = joblib.load("columns.pkl")
+except FileNotFoundError:
+    print("[v0] Model files not found! Training model...")
+    import subprocess
+    subprocess.run(["python", "train_model.py"], check=True)
+    model = joblib.load("mpg_model.pkl")
+    scaler = joblib.load("scaler.pkl")
+    columns = joblib.load("columns.pkl")
 
 app = Flask(__name__)
 
@@ -523,7 +531,7 @@ RESULT_TEMPLATE = """<!DOCTYPE html>
             margin-bottom: 30px;
             letter-spacing: 1px;
         }
-        /* <CHANGE> Added music toggle button styling */
+        /* Added music toggle button styling */
         #musicToggle {
             position: fixed;
             top: 20px;
@@ -546,7 +554,7 @@ RESULT_TEMPLATE = """<!DOCTYPE html>
     </style>
 </head>
 <body>
-    <!-- <CHANGE> Added audio elements for result page music -->
+    <!-- Added audio elements for result page music -->
     <!-- Victory/Results background music -->
     <audio id="bgMusic" loop>
         <source src="https://orangefreesounds.com/wp-content/uploads/2024/07/Retro-video-game-music.mp3" type="audio/mpeg">
@@ -557,12 +565,12 @@ RESULT_TEMPLATE = """<!DOCTYPE html>
         <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj==" type="audio/wav">
     </audio>
 
-    <!-- <CHANGE> Music toggle button -->
+    <!-- Music toggle button -->
     <button id="musicToggle">
         🎵 MUSIC: ON
     </button>
 
-    <!-- <CHANGE> Added music control script -->
+    <!-- Added music control script -->
     <script>
         const bgMusic = document.getElementById('bgMusic');
         const victorySound = document.getElementById('victorySound');
