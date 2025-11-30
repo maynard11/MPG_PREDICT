@@ -12,6 +12,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import IsolationForest
 from category_encoders import HashingEncoder
 import gdown
+import os
 
 print("[v0] Starting model training...")
 
@@ -75,13 +76,17 @@ model = RandomForestRegressor(
     min_samples_split=10, 
     min_samples_leaf=1, 
     random_state=42,
-    n_jobs=-1
+    n_jobs=2
 )
 model.fit(X_train, y_train)
 
 # Evaluate
 score = model.score(X_test, y_test)
 print(f"[v0] Model R² Score: {score:.4f}")
+
+if os.path.exists(file_name):
+    os.remove(file_name)
+    print(f"[v0] Cleaned up {file_name}")
 
 # Save model files
 print("[v0] Saving model files...")
