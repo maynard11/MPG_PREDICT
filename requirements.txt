@@ -1,0 +1,7 @@
+flask
+gunicorn
+numpy
+joblib
+pandas
+category-encoders
+scikit-learn
